@@ -1,0 +1,360 @@
+<aura:component controller="GetAccountListWithPaging" implements="force:appHostable" access="global">
+    
+   <!-- <ltng:require scripts="https://fast.wistia.com/embed/medias/4i3g4orvrj.jsonp" />
+    
+    <ltng:require scripts="https://fast.wistia.com/assets/external/E-v1.js" /> -->
+    
+    
+    <aura:attribute name="activeSections" type="List" default="['A','C']" />
+    <aura:attribute name="activeSectionsMessage" type="String" default="" />
+    <aura:attribute name="isButtonActive" type="Boolean" default="true" />
+    <aura:attribute name="inputdisabled" type="Boolean" default="false" />
+    
+    <aura:attribute name="runcompleted" type="Boolean" default="false" />
+    <aura:attribute name="intervalId" type="String" />
+    <aura:attribute name="syncCheck" type="Boolean" default="false" />
+    <aura:attribute name="supportersCheck" type="Boolean" default="false" />
+    <aura:attribute name="paymentCheck" type="Boolean" default="false" />
+    <aura:attribute name="videoCheck" type="Boolean" default="false" />
+    
+    <aura:attribute name="username" type="String"/>
+    <aura:attribute name="password" type="String"/>
+    <aura:attribute name="workspcname" type="String"/>  
+    <aura:attribute name="lstAccount" type="String[]" />
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <aura:attribute name="offset" type="integer" />
+    <aura:attribute name="next" type="boolean" />
+    <aura:attribute name="prev" type="boolean" />
+    <aura:attribute name="IsSpinner" type="Boolean" default="false"/>
+    <aura:attribute name="isDisabled" type= "Boolean" default="true"/>
+    <aura:attribute name="syncSection" type="String" default="Sync Your Data"/>
+    <aura:attribute name="logvideos" type="boolean"/> 
+    
+    <aura:handler name="init" action="{!c.doInit}" value="{!this}" />
+    
+    
+    <div class = "bgcolor">
+        
+        <div class="slds-p-bottom_x-large">
+            
+            <div class="slds-p-left_large">
+                
+                <div class="slds-text-heading_medium"><strong>GiveMagic Setup Assistant</strong></div>
+                
+            </div>
+            
+        </div>
+        
+        <!--<div class="slds-clearfix">
+  
+        <div class="slds-float_left">
+      
+      <div class="slds-p-left_medium">
+      
+          <p><div class="sldLoadings-p-right_large"></div><lightning:icon iconName="action:approval" alternativeText="Approved" size="xx-small" /> <b>GIVEMAGIC + SALESFORCE OVERVIEW VIDEO</b></p>
+  
+      </div>
+        
+        </div>
+
+    </div>-->
+        
+        <!-- <div class="slds-p-left_x-large">
+           <div class="slds-text-body_small">
+                The quick brown fox jumps over the lazy dog.
+                <div class="slds-p-right_medium">
+                    <div class="slds-float_right" >
+                        <lightning:button label="watch video" title="watch video" onclick="{! c.watchvideo}"/>
+                     </div>
+                </div>
+            </div>
+            
+        </div> -->
+        
+        <center>
+            
+            <iframe src="{!$Label.c.Welcome_Video}" width="640" height="480" frameborder="0" allow="autoplay; fullscreen" allowfullscreen="true"></iframe>
+        </center>
+        
+        
+        <div class="slds-p-bottom_x-large"></div>
+        
+        
+        <div class="slds-p-bottom_x-large"></div>
+        
+        <div class="slds-border_bottom"></div>
+        
+        <div class="slds-p-left_x-large">
+            
+            <div class="slds-p-top_large">
+                
+                <div class="slds-text-heading_small"><strong>GiveMagic User List</strong></div>
+                
+                
+              <!--  <div class="slds-text-body_small">The list of uers below is the list of users who have givemagic licenses.</div>  -->
+                
+                <div class="slds-p-bottom_x-large"></div>
+                
+            </div>
+            
+        </div>
+        
+        <div class="slds">
+            
+            
+            <br/>
+            
+            <br/>
+            
+            <table class="slds-table slds-table_bordered slds-table_striped slds-table_cell-buffer slds-table_fixed-layout">
+                
+                <thead>
+                    
+                    <tr class="slds-text-heading_label">
+                        
+                        
+                        <th scope="col"><div class="slds-truncate" title="Name">Name</div></th>
+                        
+                        <th scope="col"><div class="slds-truncate" title="OwnerId">Email</div></th>
+                        
+                        <th scope="col"><div class="slds-truncate" title="LastModifiedById">Phone</div></th>
+                        
+                        
+                        
+                        
+                        
+                    </tr>
+                    
+                </thead>
+                
+                <tbody>
+                    <!-- Use the Apex model and controller to fetch server side data -->
+                    
+                    
+                    <aura:iteration items="{!v.lstAccount}" var="account">
+                        
+                        <tr>
+                            
+                            <td><div class="slds-truncate" title="{!account.Name}">{!account.Name}</div></td>
+                            
+                            
+                            <td><div class="slds-truncate" title="{!account.givemagic__Email__c}">{!account.givemagic__Email__c}</div></td>
+                            
+                            
+                            <td><div class="slds-truncate" title="{!account.givemagic__Phone__c}">{!account.givemagic__Phone__c}</div></td>
+                            
+                            
+                            
+                        </tr>
+                        
+                    </aura:iteration>
+                    
+                </tbody>
+                
+            </table>
+            
+            <div class="slds-clearfix">
+                <div class="slds-float_left">
+                    <div class="slds-p-bottom_x-large">
+                        <div class="slds-p-left_xx-large">
+                            <div class="slds-p-left_xx-large">
+                                <div class="slds-p-left_xx-large">
+                                    <div class="slds-p-left_xx-large">
+                                        <div class="slds-p-left_xx-large">
+                                            <div class="slds-p-left_xx-large">
+                                                <div class="slds-p-left_xx-large">
+                                                    <div class="slds-p-left_xx-large">
+                                                        <div class="slds-p-left_xx-large">
+                                                            <div class="slds-p-top_x-large">
+                                                                <input class="slds-button slds-button--brand slds-not-selected slds-float--right" type="button" onclick="{!c.OnNext}" value="Next" disabled="{!v.next}" style="margin-left: 2px;" />
+                                                                <input class="slds-button slds-button--brand slds-not-selected slds-float--right" type="button" onclick="{!c.OnPrevious}" value="Prev" disabled="{!v.prev}" />
+                                                            </div>
+                                                            
+                                                        </div>
+                                                        
+                                                    </div>
+                                                    
+                                                </div>
+                                                
+                                            </div>
+                                            
+                                        </div>
+                                        
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                            
+                        </div>
+                        
+                    </div>       
+                    
+                </div>
+                
+            </div>
+            
+        </div>
+        
+        <div class="slds-p-bottom_x-large"></div>
+        <div class="slds-clearfix">
+            
+            <div class="slds-float_left">
+                
+                <div class="slds-p-bottom_x-large">
+                    
+                    <div class="slds-p-left_x-large">
+                        
+                        <lightning:button label="Contact GiveMagic Support  >" title="Neutral action" onclick="{!c.goToSupport }"/>
+                        
+                    </div>
+                    
+                </div>
+                
+                
+            </div>
+        </div>
+        
+        <div class="slds-border_bottom">   </div>
+        
+        <lightning:accordion
+                             allowMultipleSectionsOpen="true"
+                             onsectiontoggle="{!c.handleSectionToggle1}"
+                             activeSectionName="{!v.activeSections }"
+                             >
+            <lightning:accordionSection name="A" label="Enter GiveMagic Workspace Login">
+                <aura:set attribute="actions">
+                    
+                </aura:set>
+                <aura:set attribute="body">
+                    <div style="max-width: 200px;">
+                        
+                        <label class="slds-form-element__label" for="text-input-id-1">
+                            <abbr class="slds-required" title="required">* </abbr><b>Workspace:</b></label>
+                        
+                        <lightning:input aura:id="inpfield3"  value="{!v.workspcname}" onchange="{!c.inputclick}" disabled="{!v.inputdisabled}"/> 
+                        <label class="slds-form-element__label" for="text-input-id-1">    
+                            <abbr class="slds-required" title="required">* </abbr><b>Email:</b></label>              
+                        <lightning:input aura:id="inpfield1"  value="{!v.username}" onchange="{!c.inputclick}" disabled="{!v.inputdisabled}"/>          
+                        
+                        <label class="slds-form-element__label" for="text-input-id-1">
+                            
+                            <abbr class="slds-required" title="required">* </abbr><b>Password:</b></label>
+                        
+                        <lightning:input aura:id="inpfield2" type="Password" value="{!v.password}" onchange="{!c.inputclick}" disabled="{!v.inputdisabled}"/>          
+                        
+                        <div class="slds-p-top_x-large">
+                            <lightning:button variant="brand"  label="Save"   disabled="{!v.isButtonActive}" onclick="{!c.callmedata}"  />                                       
+                        </div>          
+                        
+                    </div>
+                    
+                </aura:set>
+            </lightning:accordionSection>
+            
+            
+            <div class="slds-border_bottom">   </div>
+            
+            
+            
+            <div class="slds-border_bottom"></div>
+            <!-- <lightning:accordion
+                             allowMultipleSectionsOpen="true"
+                             onsectiontoggle="{!c.handleSectionToggle1}"
+                             activeSectionName="{!v.activeSections }"
+                             > -->
+            <lightning:accordionSection name="C" label="{!v.syncSection}">
+                <aura:set attribute="actions">
+                </aura:set>
+                <aura:set attribute="body">
+                   <!-- <p>Here is the givemagic setup assistant. You can watch videos and many more things .It's  a charitable organisation that helps the poors</p><br></br> -->
+                    <div class="slds-p-around_small">
+                        <aura:if isTrue="{!v.syncCheck}">
+                            <lightning:icon iconName="utility:success" alternativeText="Success!" variant="Success"
+                                            title="success variant small" size="x-small" />
+                        </aura:if>
+                        Sync your Actions
+                        <!--loading spinner start... style=Brand Medium (blue dots)-->
+                        <aura:if isTrue="{!v.IsSpinner}">
+                            <div aura:id="spinnerId" class="slds-spinner_container">
+                                <div class="slds-spinner--brand  slds-spinner slds-spinner--large slds-is-relative" role="alert">
+                                    <span class="slds-assistive-text">Loading</span>
+                                    <div class="slds-spinner__dot-a"></div>
+                                    <div class="slds-spinner__dot-b"></div>
+                                </div>
+                            </div>
+                        </aura:if>
+                        <!-- Loading spinner end-->   
+                        <div class="slds-float_right">
+                            <lightning:button variant="brand-outline" label="Sync Actions" aura:id="btn-1" disabled="true" onclick="{!c.callQueue}"/>
+                        </div>
+                    </div>
+                    <br></br>
+                    <div class="slds-border_bottom"></div>
+                    <div class="slds-p-around_small">
+                        <aura:if isTrue="{!v.supportersCheck}">
+                            <lightning:icon iconName="utility:success" alternativeText="Success!" variant="Success"
+                                            title="success variant small" size="x-small" />
+                        </aura:if>
+                        Sync your Supporters
+                        <div class="slds-float_right">
+                            <lightning:button variant="brand-outline" label="Sync Supporters" aura:id="btn-2" disabled="true" onclick="{!c.callQueue}"/>
+                        </div>
+                    </div>
+                    <br></br>
+                    <div class="slds-border_bottom"></div>
+                    <div class="slds-p-around_small">
+                        <aura:if isTrue="{!v.paymentCheck}">
+                            <lightning:icon iconName="utility:success" alternativeText="Success!" variant="Success"
+                                            title="success variant small" size="x-small" />
+                        </aura:if>
+                        Sync your Donations
+                        <div class="slds-float_right">
+                            <lightning:button variant="brand-outline" label="Sync Donations" aura:id="btn-3" disabled="true" onclick="{!c.callQueue}" />
+                        </div>
+                    </div>
+                    <br></br>
+                    <div class="slds-border_bottom"></div>
+                    <div class="slds-p-around_small">
+                        <aura:if isTrue="{!v.videoCheck}">
+                            <lightning:icon iconName="utility:success" alternativeText="Success!" variant="Success"
+                                            title="success variant small" size="x-small" />
+                        </aura:if>
+                        Sync your Videos
+                        
+                        <div  class="slds-float_right slds-align_absolute-center" >
+                            <lightning:input type="toggle" name="toggleButton" aura:id="tglbtn"  label="Log Videos as Tasks" 
+                                             messageToggleActive="ON" messageToggleInactive="OFF" 
+                                             onchange="{!c.logVideos}" checked="{!v.logvideos}" class="slds-m-top_x-small"/>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            
+                            <lightning:button variant="brand-outline" label="Sync Video" aura:id="btn-4" disabled="true" onclick="{!c.callQueue}"/>
+                            
+                        </div>
+                    </div>
+                    
+                    <br></br>
+                    <br></br>
+                    
+                </aura:set>
+            </lightning:accordionSection>
+        </lightning:accordion>
+        <div class="slds-border_bottom"></div>
+        <div class="slds-border_bottom"></div>
+        <!--  <div class="slds-p-left_x-large">
+            <div class="slds-border_bottom"></div>
+        </div>
+        
+        <div class="slds-border_bottom">   </div>
+        
+        
+        <div class="slds-p-left_x-large">
+            
+            
+            <div class="slds-border_bottom">   </div>
+            
+        </div>-->
+        
+    </div>   
+    
+</aura:component>

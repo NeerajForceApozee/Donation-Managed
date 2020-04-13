@@ -1,0 +1,19 @@
+.THIS .blues {
+    color : blue ;
+}
+.THIS {
+  background-color: white;
+  height: 300%;
+  width:75%;
+  padding-top : 3%;
+}
+.THIS .required:after {
+      content:"*";
+      color: red;
+      text-indent: 80px;
+      text-align: left;
+    }
+.THIS.slds-spinner_container {  
+  z-index: 10000;
+  position: fixed;   
+}

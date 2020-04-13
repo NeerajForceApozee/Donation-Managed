@@ -1,0 +1,216 @@
+<aura:component controller="ContactAuraController"	implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,force:lightningQuickAction" access="global" >
+	 
+    <aura:attribute name="isSelectAll" type="boolean" default="false"/>
+    <aura:attribute name="contactList" type="contact[]" /> 
+    <aura:attribute name="paginationList" type="contact[]"/>
+    <aura:attribute name="pageSize" type="Integer" default="5"/>
+	<aura:attribute name="totalSize" type="Integer"/>
+    <aura:attribute name="start" type="Integer" />
+    <aura:attribute name="end" type="Integer"/>
+    <aura:attribute name="ctas" type="List" />
+    <aura:attribute name ="admins" type="List" />
+    <aura:attribute name="selectedcta" type="String"/>
+     <aura:attribute name="selectedadmin" type="String"/>  
+    <aura:attribute name ="selectedid" type="string"/>
+    
+  <!--  <table >
+
+	<tr > <td style="width:5%">Show</td><td style="width:7%"><ui:inputSelect aura:id="records" change="{!c.onSelectChange}">
+
+	<ui:inputSelectOption text="5" value="5"/>
+
+	<ui:inputSelectOption text="10" value="10"/>
+
+	<ui:inputSelectOption text="20" value="20"/>
+
+	<ui:inputSelectOption text="30" value="30"/>
+
+	</ui:inputSelect></td><td>Entries</td>
+
+	<td style="width:7%">Search</td>
+
+	<td style="width:25%">
+
+	<ui:inputText aura:id="input1"   change="{!c.searchKeyChange}"   required="true"></ui:inputText>
+
+	
+        </td>
+
+
+        </tr>
+
+
+        </table> -->
+    
+
+    <aura:html tag="style">
+
+        .slds-modal__container{
+        width: 55%;
+
+        max-width: 60rem;
+
+        }
+
+        .modal-body{
+
+        height : 400px !important;
+selPickListValue
+        max-height: 550px !important;
+        }
+
+    </aura:html> 
+ 		<div class="slds-grid slds-gutters">
+ 			<div class="slds-col slds-text-title">
+  		 		<span>CALL TO ACTION</span> 			        
+    			<div>
+                    <lightning:select name="CTA"   onchange="{!c.callselectedctas}" aura:id="ctaPicklist"  value="{!v.selectedcta}" >
+                                        <aura:iteration items="{!v.ctas}" var="cta" >
+                                      <option value="{!cta.givemagic__Id__c}"  >{!cta.Name}</option>
+                                     </aura:iteration> 
+                    </lightning:select>
+            
+        		</div>
+    		</div>
+            <div style="width:100px;">            
+                <div class="slds-col">                        
+                    
+                    <lightning:recordViewForm recordId="{!v.selectedid}" objectApiName="CTA__c">
+                        <!-- <div class="slds-box slds-theme_default slds-text-title"> -->
+                        <lightning:outputField fieldName="givemagic__Donationtype__c" />
+                        
+                        <!-- </div> -->
+                    </lightning:recordViewForm>                                        
+                </div> 
+            </div>
+                                
+            <div class="slds-col">
+                    
+                               <div style="width:350px;"> 
+                      <lightning:recordViewForm recordId="{!v.selectedid}" objectApiName="CTA__c">
+       <!-- <div class="slds-box slds-theme_default"> -->
+            				<lightning:outputField fieldName="givemagic__Description__c" />
+           
+        <!--</div> -->
+    				</lightning:recordViewForm>
+                    
+                    
+             </div>
+            </div>
+                                
+    	</div>
+    
+    	<div style="width:200px;">
+        
+ 			<div class="slds-grid slds-gutters">
+ 				<div class="slds-col">
+  		 				 <span>Givemagic Users:</span> 			    
+                     <lightning:select name="admin"    aura:id="adminPicklist"  onchange="{!c.callselectedadmins}" value="{!v.selectedadmin}" >
+                         <aura:iteration items="{!v.admins}" var="admin" >
+                              <option value="{!admin.givemagic__External_Id__c}">{!admin.Name}</option>
+                         </aura:iteration>
+                    </lightning:select>
+    			</div>
+        	</div>
+    	</div>
+        
+    
+     
+    <div class="slds-m-around_xx-large">
+       
+        
+        <br/>
+        <!--Contact List Table-->
+        <table class="slds-table slds-table--bordered slds-table--cell-buffer" role="grid">      
+            <thead>  
+                <tr class="slds-text-title--caps">
+                    <th>           
+                        <label class="slds-checkbox">
+                            
+                            <ui:inputCheckbox value="{!v.isSelectAll}" change="{!c.handleSelectAllContact}" aura:id="selectAll"/>
+                            <span class="slds-checkbox--faux" />
+                            <span class="slds-form-element__label"></span>
+                        </label>
+                    </th>
+                    <th scope="col">
+                        <div class="slds-truncate" title="Name">Name</div>
+                    </th>                    
+                    <th scope="col">
+                        <div class="slds-truncate" title="ADMINS">Givemagic Users</div>
+                    </th>
+                     
+                   
+                     <th scope="col">
+                        <div class="slds-truncate" title="call to action">call to action</div>
+                    </th>
+                   
+                </tr>
+            </thead>
+            <tbody>        
+                <aura:iteration items="{!v.contactList}" var="con">
+                    <tr>
+                        <th>
+                            <label class="slds-checkbox">
+                                
+                                <ui:inputCheckbox aura:id="{!con.Id}" value="{!con.isSelected}" change="{!c.handleSelectedcontact}"/>
+                                <span class="slds-checkbox--faux" />
+                                <span class="slds-form-element__label"></span>
+                            </label>
+                        </th>
+                        <th scope="row">
+                            <div class="slds-truncate" title="{!con.Name}">{!con.Name}</div>
+                        </th>
+                       
+                    <td>
+                        <lightning:select name="admin" value="{!con.admin}">
+        						<aura:iteration items="{!v.admins}" var="admin">
+                                  <option value="{!admin.givemagic__External_Id__c}">{!admin.Name}</option>
+                                 </aura:iteration>  
+                            </lightning:select>
+                        </td>
+                      
+                        <td>
+                           <div class="slds-truncate" title="{!con.list}">{!con.list}</div> 
+                             <lightning:select name="CTA"  value="{!con.cta}">
+        						<aura:iteration items="{!v.ctas}" var="cta">
+                                  <option value="{!cta.givemagic__Id__c}">{!cta.Name}</option>
+                                 </aura:iteration>     
+           						
+      					  </lightning:select>
+                        </td>
+                    </tr>
+                </aura:iteration>
+            </tbody>
+        </table>
+        
+       
+    </div>
+
+        <table class="slds-table slds-table–bordered ">
+
+            <tbody>
+
+                <lightning:button label="First" disabled="{!v.start == 0}"  onclick="{!c.first}" />
+
+
+                <lightning:button label="Previous" disabled="{!v.start == 0}"  onclick="{!c.previous}"/>
+
+
+                <lightning:button label="Next" disabled="{!v.end >= v.totalSize}" onclick="{!c.next}" />
+
+
+                    <lightning:button label="Last" disabled="{!v.end >= v.totalSize}" onclick="{!c.last}" />
+					
+                 <div>
+            <br/>
+           <lightning:button variant="brand" label="Continue" aura:id="disableenable" onclick="{!c.sendTodo}" disabled="true" />
+        </div>
+
+                    </tbody>
+
+
+                </table>
+
+
+            
+</aura:component>

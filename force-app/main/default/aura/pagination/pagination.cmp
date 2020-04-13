@@ -1,0 +1,46 @@
+<aura:component controller="GetAccountListWithPaging" implements="force:appHostable">
+<aura:attribute name="lstAccount" type="String[]" />
+<aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+<aura:attribute name="offset" type="integer" />
+<aura:attribute name="next" type="boolean" />
+<aura:attribute name="prev" type="boolean" />
+<br/>
+<br/>
+<div class="slds">
+<div style="font-size:28px;font-weight:bold;margin-left:20px">
+Record List
+</div>
+<br/>
+<br/>
+<table class="slds-table slds-table_bordered slds-table_striped slds-table_cell-buffer slds-table_fixed-layout">
+<thead>
+<tr class="slds-text-heading_label">
+ 
+<th scope="col"><div class="slds-truncate" title="Name">Name</div></th>
+<th scope="col"><div class="slds-truncate" title="Type">Type</div></th>
+ 
+ 
+<th scope="col"><div class="slds-truncate" title="Billing State">Billing State</div></th>
+<th scope="col"><div class="slds-truncate" title="Billing City">Billing City</div></th>
+<th scope="col"><div class="slds-truncate" title="Phone">Phone</div></th>
+</tr>
+</thead>
+<tbody>
+<!-- Use the Apex model and controller to fetch server side data -->
+<aura:iteration items="{!v.lstAccount}" var="account">
+<tr>
+ 
+<td><div class="slds-truncate" title="{!account.Name}">{!account.Name}</div></td>
+<td><div class="slds-truncate" title="{!account.Type}">{!account.Type}</div></td>
+<td><div class="slds-truncate" title="{!account.BillingState}">{!account.BillingState}</div></td>
+<td><div class="slds-truncate" title="{!account.BillingCity}">{!account.BillingCity}</div></td>
+<td><div class="slds-truncate" title="{!account.Phone}">{!account.Phone}</div></td>
+ 
+</tr>
+</aura:iteration>
+</tbody>
+</table>
+<input class="slds-button slds-button--brand slds-not-selected slds-float--right" type="button" onclick="{!c.OnNext}" value="Next" disabled="{!v.next}" style="margin-left: 2px;" />
+<input class="slds-button slds-button--brand slds-not-selected slds-float--right" type="button" onclick="{!c.OnPrevious}" value="Prev" disabled="{!v.prev}" />
+</div>
+</aura:component>
