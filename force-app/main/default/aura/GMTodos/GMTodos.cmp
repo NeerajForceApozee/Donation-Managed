@@ -6,7 +6,7 @@ Name: ContactList.cmp
     
     
     <!--Declare Attributes-->
-     <aura:attribute name="sobjecttype" type="String" default="{!v.sObjectName}"/>		
+    <aura:attribute name="sobjecttype" type="String" default="{!v.sObjectName}"/>		
     <aura:attribute name="isSelectAll" type="boolean" default="false"/>  
     <aura:attribute name="contactList" type="contact[]" /> 	
     <aura:attribute name="startPage" type="Integer" default="0"/>
@@ -17,14 +17,21 @@ Name: ContactList.cmp
     <aura:attribute name="totalRecords" type="Integer"/>
     <aura:attribute name="pageSize" type="Integer" default="5"/>
     <aura:attribute name="isSending" type="boolean" />
-    
-    <aura:attribute name="ctas" type="List" />
-    <aura:attribute name ="admins" type="List" />
+    <aura:attribute name="isHide" type="boolean" default="true"/>
+    <aura:attribute name="ctas" type="Object[]" />
+    <aura:attribute name ="admins" type="Object[]" />
     <aura:attribute name="selectedcta" type="String"/>
     <aura:attribute name="selectedadmin" type="String"/>  
+    <aura:attribute name="firstcta" type="String"/>
+    <aura:attribute name="firstadmin" type="String"/>  
     <aura:attribute name ="selectedid" type="string"/>
+    <aura:attribute name ="selectDesc" type="string"/>
+    
+    
     
     <aura:handler name="init"  value="{!this}" action="{!c.doInit}"/>
+    
+    
     
     <!-- Spinner Start, show the loading screen while 
    Client side controller(JS) is communicating with Server Side(APEX) controller -->
@@ -39,185 +46,173 @@ Name: ContactList.cmp
     </aura:if> 
     <!-- Spinner End -->
     
-    <!-- <aura:html tag="style">
-
-         .slds-modal__container{
-         width: 55%;
-         
-         max-width: 60rem;
-         
-         }
-         
-         .modal-body{
-         font-family : sans-serif;
-         height : 400px !important;
-         selPickListValue
-         max-height: 550px !important;
-         }
-
-    </aura:html> -->
+    <aura:html tag="style">
+        .slds-modal__container {
+        width : 80% !important;
+        max-width : 80% !important;
+        }
+        .uiButton--default{
+        display:none !important;
+        }
+        .slds-form-element__label{
+         display:none !important;
+        }
+        
+        
+       
+       
+        
+    </aura:html>
     
-    
-   
+    <div>
         <div class="slds-grid slds-gutters">
-            <div>
-                <div class="slds-col" style="padding:4px;">
-                    <span class="slds-text-title"  >Call to Action</span> 			        
-                    <div>
-                        <lightning:select name="CTA"   onchange="{!c.callselectedctas}" aura:id="ctaPicklist"  value="{!v.selectedcta}" class="callToAction" >
-                            <aura:iteration items="{!v.ctas}" var="cta" >
-                                <option value="{!cta.givemagic__Id__c}"  >{!cta.Name}</option>
-                            </aura:iteration> 
-                        </lightning:select>
-                    </div> 
-                </div>
+            <div class="slds-col">
+                <span class="slds-text-title slds-p-top_xxx-small"  ><b>Select Call to Action</b></span> 			        
+                <lightning:select name="CTA"   onchange="{!c.callselectedctas}" aura:id="ctaPicklist"  value="{!v.selectedcta}" class="callToAction" >
+                    <aura:iteration items="{!v.ctas}" var="cta" >
+                        <option value="{!cta.id}"  >{!cta.title}</option>
+                        
+                    </aura:iteration> 
+                </lightning:select>
             </div>
-            
-            
-            
-            <div>            
-                <div class="slds-col" style="width:150px; padding-left:40px; ">                        
-                    <lightning:recordViewForm recordId="{!v.selectedid}" objectApiName="CTA__c" class= "Donationtype">
-                        <lightning:outputField  fieldName="givemagic__Donationtype__c"  />
-                    </lightning:recordViewForm>                                        
+            <div class ="slds-col Description" style ="Width : 550px">
+                <span class="slds-text-title slds-p-top_xxx-small"  ><b>Call to Action Description</b></span> 
+               
+                <div class="slds-form-element__control description " style = "width:600px;  font-weight:bold; " aura:id="ctaDesc">
+                    <div class="slds-form-element__static" style ="font-weight:bold;">
+                        <ui:outputRichText class="slds-text-longform" value="{!v.selectDesc}"/>
+                    </div>
                 </div> 
             </div>
-            
-            
-            
-            <div style="width:250px;">
-                <div class="slds-col ">
-					<!--
-                    <lightning:recordViewForm recordId="{!v.selectedid}" objectApiName="CTA__c">
-                        
-                        <lightning:outputField fieldName="givemagic__Description__c" />
-                    </lightning:recordViewForm>
-					-->
-                </div>
+
+                <div class="slds-float_right">
+                    <lightning:button variant="brand" label="Create To Do" aura:id="disableenable" onclick="{!c.sendTodo}" disabled="{!v.isHide}" class="TODO_BTN"/>
+                
             </div>
         </div>
         
-        
-        
-        <div style="width:250px; padding-top:60px;">
-            <div class="slds-grid slds-gutters">
-                <div class="slds-col">
-                    <span class="slds-text-title slds-p-top_xxx-small">GiveMagic Users:</span> 			    
-                    <lightning:select name="admin"    aura:id="adminPicklist"  onchange="{!c.callselectedadmins}" value="{!v.selectedadmin}" class="gmUser" >
-                        <aura:iteration items="{!v.admins}" var="admin" >
-                            <option value="{!admin.givemagic__External_Id__c}">{!admin.Name}</option>
-                        </aura:iteration>
-                    </lightning:select>
-                </div>
+    </div>
+    
+    
+    
+    <div style="width:250px; padding-top:20px;">
+        <div class="slds-grid slds-gutters">
+            <div class="slds-col">
+                <span class="slds-text-title slds-p-top_xxx-small"><b>Select Storyteller</b></span> 			    
+                <lightning:select name="admin"    aura:id="adminPicklist"  onchange="{!c.callselectedadmins}" value="{!v.selectedadmin}" class="gmUser" >
+                    <aura:iteration items="{!v.admins}" var="admin" >
+                        <option value="{!admin.Id}">{!admin.fullName}</option>
+                    </aura:iteration>
+                </lightning:select>
             </div>
         </div>
-        
-        
-      
-       <!-- <div class="slds-m-around_xx-large"> -->
+    </div>
+    
+    
+    
+    <!-- <div class="slds-m-around_xx-large"> -->
+    
+    <br/>
+    
+    
+    
+    
+    <br></br>
+    <aura:if isTrue="{!v.sObjectName !='Contact'}" >    
+        <!--Contact List Table-->
+        <div class="slds-clearfix">
+        <div class="slds-float_right">
+            Show &nbsp;&nbsp;
             
-            <br/>
-        <aura:if isTrue="{!v.sObjectName !='Contact'}" >    
-            <!--Contact List Table-->
-             <table class="slds-table slds-table--bordered slds-table--cell-buffer" role="grid">      
-                <thead> 
-                    <tr > <td style="width:3%">Show</td>
-                        
-                        <td style="width:2%">
-                            <ui:inputSelect aura:id="records" change="{!c.onSelectChange}" class="inputchg" value="{!v.pageSize}">
-                                
-                                <ui:inputSelectOption text="5" value="5"/>
-                                
-                                <ui:inputSelectOption text="10" value="10"/>
-                                
-                                <ui:inputSelectOption text="20" value="20"/>
-                                
-                            </ui:inputSelect>&nbsp;&nbsp;&nbsp;Entries
-                        </td>
-                        
-                        <!--<td>Entries</td>-->
-                        
-                    </tr>
-                    <tr class="slds-text-title--small">
-                        <th>           
-                            <label class="slds-checkbox">
-                                
-                                <ui:inputCheckbox value="{!v.isSelectAll}" change="{!c.handleSelectAllContact}" aura:id="selectAll"/>
-                                <span class="slds-checkbox--faux" />
-                                <span class="slds-form-element__label"></span>
-                            </label>
-                        </th>
-                        <th scope="col">
-                            <div class="slds-truncate" title="Name">Name</div>
-                        </th>                    
-                        <th scope="col">
-                            <div class="slds-truncate" title="ADMINS">GiveMagic Users</div>
-                        </th>
-                        
-                        
-                        <th scope="col">
-                            <div class="slds-truncate" title="Call to Action">Call to Action</div>
-                        </th>
-                        
-                    </tr>
-                </thead>
-                <tbody> 
-                    
-                    <aura:iteration items="{!v.contactList}" var="con" indexVar="pos">
-                        <aura:if isTrue="{!and(greaterthanorequal(pos,v.recordStartPos),lessthanorequal(pos,v.recordEndPos))}">
-                            <tr>
-                                <th>
-                                    <label class="slds-checkbox">
-                                        
-                                        <ui:inputCheckbox aura:id="{!con.Id}" value="{!con.isSelected}" change="{!c.handleSelectedcontact}"/>
-                                        <span class="slds-checkbox--faux" />
-                                        <span class="slds-form-element__label"></span>
-                                    </label>
-                                </th>
-                                <th scope="row">
-                                    <div class="slds-truncate" title="{!con.Name}">{!con.Name}</div>
-                                </th>
-                                
-                                <td>
-                                    <lightning:select name="admin" value="{!con.admin}">
-                                        <aura:iteration items="{!v.admins}" var="admin">
-                                            <option value="{!admin.givemagic__External_Id__c}">{!admin.Name}</option>
-                                        </aura:iteration>  
-                                    </lightning:select>
-                                </td>
-                                
-                                <td>
-                                    <div class="slds-truncate" title="{!con.list}">{!con.list}</div> 
-                                    <lightning:select name="CTA"  value="{!con.cta}">
-                                        <aura:iteration items="{!v.ctas}" var="cta">
-                                            <option value="{!cta.givemagic__Id__c}">{!cta.Name}</option>
-                                        </aura:iteration>     
-                                        
-                                    </lightning:select>
-                                </td>
-                            </tr>
-                        </aura:if>   
-                    </aura:iteration> 
-                 
-                </tbody>
-            </table>
-        
-            
-            <div  style="text-align:center; padding-top:30px;">
-                <div class="slds-m-around_medium">
-                    <lightning:buttonGroup class="btn" >
-                        <lightning:button label="Previous" disabled="{!v.startPage == v.currPage}"  
-                                          onclick="{!c.previous}" variant="brand"
-                                          iconName='utility:back' class="prevbtn"/>
-                        &nbsp; &nbsp; &nbsp;
-                        <lightning:button label="Next" disabled="{!v.endPage == v.currPage}" 
-                                          onclick="{!c.next}" variant="brand"
-                                          iconName='utility:forward' iconPosition='right' class="nextbtn"/>
-                    </lightning:buttonGroup>
-                </div>
+            <ui:inputSelect aura:id="records" change="{!c.onSelectChange}" class="inputchg" value="{!v.pageSize}">
+                <ui:inputSelectOption text="5" value="5"/>
+                <ui:inputSelectOption text="10" value="10"/>
+                <ui:inputSelectOption text="20" value="20"/>
+            </ui:inputSelect>
+            &nbsp;&nbsp;&nbsp;
+            <lightning:buttonGroup class="btn" >
+                <lightning:button label="Previous" disabled="{!v.startPage == v.currPage}"  
+                                  onclick="{!c.previous}" variant="brand-outline"
+                                  iconName='utility:back' class="prevbtn"/>
+                &nbsp; &nbsp; &nbsp;
+                <lightning:button label="Next" disabled="{!v.endPage == v.currPage}" 
+                                  onclick="{!c.next}" variant="brand-outline"
+                                  iconName='utility:forward' iconPosition='right' class="nextbtn"/>
+            </lightning:buttonGroup>
+        </div>
+        <span class="slds-text-title">
+            <div class="slds-p-top_medium"> 
+                <b>Select Contacts</b>
             </div>
- 	</aura:if> 
-            <!--  <div  style="text-align:center; padding-top:30px;">
+        </span>
+        
+    </div>
+        <table class="slds-table slds-table--bordered slds-table--cell-buffer" role="grid" cellpadding="0">      
+            <thead> 
+                
+                <tr class="slds-text-title--small">
+                    <th>           
+                        <label class="slds-checkbox">
+                            <ui:inputCheckbox value="{!v.isSelectAll}" change="{!c.handleSelectAllContact}" aura:id="selectAll"/>
+                            <span class="slds-checkbox--faux" />
+                            <span class="slds-form-element__label"></span>
+                        </label>
+                    </th>
+                    <th scope="col">
+                        <div class="slds-truncate slds-p-around_x-small" title="Name">Name</div>
+                    </th>                    
+                    <th scope="col">
+                        <div class="slds-truncate slds-p-around_x-small " title="ADMINS">Storyteller</div>
+                    </th>
+                    <th scope="col">
+                        <div class="slds-truncate slds-p-around_x-small" title="Call to Action">Call to Action</div>
+                    </th>
+                </tr>
+            </thead>
+            <tbody> 
+                
+                <aura:iteration items="{!v.contactList}" var="con" indexVar="pos">
+                    <aura:if isTrue="{!and(greaterthanorequal(pos,v.recordStartPos),lessthanorequal(pos,v.recordEndPos))}">
+                        <tr>
+                            <th>
+                                <label class="slds-checkbox">
+                                    
+                                    <ui:inputCheckbox aura:id="{!con.Id}" value="{!con.isSelected}" change="{!c.handleSelectedcontact}"/>
+                                    <span class="slds-checkbox--faux" />
+                                   
+                                </label>
+                            </th>
+                            <th scope="row">
+                                <div class="slds-truncate slds-p-around_small" style="color:blue;" title="{!con.Name}">{!con.Name}</div>
+                            </th>
+                            
+                            <td>
+                                <lightning:select name="admin" value="{!con.admin}" class="slds-p-around_x-small">
+                                    <aura:iteration items="{!v.admins}" var="admin">
+                                        <option value="{!admin.Id}">{!admin.fullName}</option>
+                                    </aura:iteration>  
+                                </lightning:select>
+                            </td>
+                            
+                            <td>
+                                <!--<div class="slds-truncate" title="{!con.list}">{!con.list}</div> -->
+                                <lightning:select name="CTA"  value="{!con.cta}">
+                                    <aura:iteration items="{!v.ctas}" var="cta">
+                                        <option value="{!cta.id}">{!cta.title}</option>
+                                    </aura:iteration>     
+                                </lightning:select>
+                            </td>
+                        </tr>
+                    </aura:if>   
+                </aura:iteration> 
+                
+            </tbody>
+        </table>
+        
+        
+        
+    </aura:if> 
+    <!--  <div  style="text-align:center; padding-top:30px;">
             <lightning:button label="First" disabled="{!v.start == 0}"  onclick="{!c.first}" />
             
             <lightning:button label="Previous" disabled="{!v.start == 0}"  onclick="{!c.previous}" />
@@ -226,13 +221,12 @@ Name: ContactList.cmp
             
             <lightning:button label="Last" disabled="{!v.end >= v.totalSize}" onclick="{!c.last}" />
         </div> -->
-            
-          
-                <div style="text-align:center;">
-                    <br/>
-                    <lightning:button variant="brand" label="Create To Do" aura:id="disableenable" onclick="{!c.sendTodo}" disabled="true" />
-                </div>
-            
-       <!-- </div> -->
+    
+    
+    
+    
+    <!-- </div> -->
+    
+    
     
 </aura:component>

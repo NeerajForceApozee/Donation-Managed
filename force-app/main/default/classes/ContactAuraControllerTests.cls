@@ -2,25 +2,32 @@
 private class ContactAuraControllerTests {
     @TestSetup
     static void data(){
-        Configuration__c config = new Configuration__c(Name='GiveMagic Set Up Assistant',Workspace__c='Easyclick',Username__c='easyclick05@gmail.com',Password__c='122222');   
+         Configuration__c config = new Configuration__c(Name='GiveMagic Set Up Assistant',givemagic__Client_Secret__c='test Secret',givemagic__Client_Id__c='test Client',givemagic__Integration_Id__c='test integration',Access_Token__c='test Access token',givemagic__Identity_token__c='Test idenity token');   
         insert config;
         
-        Account a = new Account(Name = config.Workspace__c,Email__c = 'test@test.com',SupportersId__c='5e4c6bce1d036b000486ea7e');
+        Account a = new Account(Name = config.Name,Email__c = 'test@test.com',SupportersID__c = '5e4bf6642837c20004cc4c40');       
         insert a;
         
         Contact c = new Contact(AccountId = a.Id,FirstName='John', LastName='Doe',Email ='test@test.com',SupportersID__c = '5e4c6bce1d036b000486ea7e');
         insert c;
      
-        Admin__c ad = new Admin__c(External_Id__c='5e4a9c1bb33d410004594746',Email__c='easyclick05@gmail.com',Name='Yusuf Adeniyi');
-        insert ad;
+        /*Admin__c ad = new Admin__c(External_Id__c='5e4a9c1bb33d410004594746',Email__c='easyclick05@gmail.com',Name='Yusuf Adeniyi');
+        insert ad;*/
+        givemagic__Videos__c story =  new givemagic__Videos__c(givemagic__abandonedTransactions__c=0,
+                                                        givemagic__engagementRate__c=30,								
+                                                        givemagic__numberOfPlays__c=2,
+                                                        givemagic__storyViews__c=0,
+                                                        givemagic__shares__c=0,
+                                                        givemagic__shareSignUps__c=0,
+                                                        givemagic__totalTransactedSum__c=0,
+                                                        givemagic__numberOfTransactions__c=0,
+                                                        givemagic__numberOfLinkClicks__c=0,
+                                                        givemagic__storiesSent__c=0,
+                                                        givemagic__External_id__c='5ef3e98818e37700479df1df');
+        insert story;
+
         
-        CTA__c cta = new CTA__c(Admin_Id__c=ad.Id,Name='Sponsor a student',Id__c='5e4bc2072837c20004cc4bfb');
-        CTA__c cta2 = new CTA__c(Admin_Id__c=ad.Id,Name='testing Archived',Id__c='5e57a4c500a7ff0004e37c56');
-        CTA__c cta3 = new CTA__c(Admin_Id__c=ad.Id,Name='Call to Action Title Goes Here',Id__c='5e58054100a7ff0004e37c71');
-        CTA__c cta4= new CTA__c(Admin_Id__c=ad.Id,Name='Thank You',Id__c='5e4bc47e2837c20004cc4c00');
-        CTA__c cta5= new CTA__c(Admin_Id__c=ad.Id,Name='testing',Id__c='5e60109fde9d80000484df32');
-        CTA__c cta6= new CTA__c(Admin_Id__c=ad.Id,Name='✏️Sponsor a Classroom',Id__c='5e3d5f7d77095300043c928c');
-        insert new List<CTA__c>{cta,cta2,cta3,cta4,cta5,cta6};
+        
         
         Campaign camp1 = new Campaign(Name = 'Test Campaign 1', IsActive = True);
         insert camp1;
@@ -35,25 +42,120 @@ private class ContactAuraControllerTests {
         Account a = [SELECT id FROM Account limit 1];
         Campaign c = [SELECT Id FROM Campaign limit 1];
         Contact con = [SELECT id from Contact LIMIT 1];
+        
+       
         ContactAuraController.getObjectList(a.Id);
-        ContactAuraController.getCampaignMemberContacts(c.Id);
-        ContactAuraController.getCtaList();
-        ContactAuraController.getAdmin();
-        ContactAuraController.getContactsFromAccount(a.Id);
+        
+       
+       
         ContactAuraController.getContacts(con.Id);
+         
+       
+         //ContactAuraController.checkArray(str);
+        
+       
+        
 
+        
+        StaticResourceCalloutMock mock = new StaticResourceCalloutMock();
+        Test.setMock(HttpCalloutMock.class, new MockHttpResponseGenerator());
+        //String s= 'cta';
+       //ContactAuraController.fetchCtaStorytellers(s);
+      
+ 
+    }
+    static testmethod void run2(){
+        Account a = [SELECT id FROM Account limit 1];
+        Campaign c = [SELECT Id FROM Campaign limit 1];
+        Contact con = [SELECT id from Contact LIMIT 1];
+		ContactAuraController.getCampaignMemberContacts(c.Id);
+    }
+    
+    static testmethod void run3(){
+        Account a = [SELECT id FROM Account limit 1];
+        Campaign c = [SELECT Id FROM Campaign limit 1];
+        Contact con = [SELECT id from Contact LIMIT 1];
+        
+        staticresource res = [Select id,Body,name from staticresource where name='CtaStorytellersMockResponse'];
+        string str = res.Body.toString();
+        
+        
+        ContactAuraController.fetchStoryteller(str);
+    }
+    
+    static testmethod void run4(){
+        Account a = [SELECT id FROM Account limit 1];
+        Campaign c = [SELECT Id FROM Campaign limit 1];
+        Contact con = [SELECT id from Contact LIMIT 1];
+        
+         StaticResourceCalloutMock mock = new StaticResourceCalloutMock();
+        Test.setMock(HttpCalloutMock.class, new MockHttpResponseGenerator());
+         ContactAuraController.fetchContactsFromAccount(a.ID);
+        
+    }
+    
+   static testmethod void run5(){
+        StaticResourceCalloutMock mock = new StaticResourceCalloutMock();
+        Test.setMock(HttpCalloutMock.class, new MockHttpResponseGenerator());
+       
+       staticresource res = [Select id,Body,name from staticresource where name='CtaStorytellersMockResponse'];
+      string str = res.Body.toString();
+      
+        test.startTest();
+        ContactAuraController.fetchCtaStorytellers(str);
+       test.stopTest();
+    }
+    
+    static testmethod void run6(){
+        Account a = [SELECT id FROM Account limit 1];
+        Campaign c = [SELECT Id FROM Campaign limit 1];
+        Contact con = [SELECT id from Contact LIMIT 1];
+        
+         staticresource res = [Select id,Body,name from staticresource where name='CtaStorytellersMockResponse'];
+        System.assert(res.Body!= null , 'Body Coming Null');
+        string response = res.Body.toString();
+        
+		 ContactAuraController.fetchCta(response);        
+    }
+    
+     static testmethod void run7(){
+        Account a = [SELECT id FROM Account limit 1];
+        Campaign c = [SELECT Id FROM Campaign limit 1];
+        Contact con = [SELECT id from Contact LIMIT 1];
+         
+         Map<object,object> objMap = new Map<object,object>{
+            'cta' => '5e3d5f7d77095300043c928c',
+            //'SupportersID__c' => '5e3d5f7d77095300043c928c',    
+            'Id' => con.Id
+        };
+            StaticResourceCalloutMock mock = new StaticResourceCalloutMock();
+         Test.setMock(HttpCalloutMock.class, new MockHttpResponseGenerator());
+          System.assert(objMap != null , 'ObjMap Coming Null for createTodoQueueable');
+         
+        Test.startTest();
+        ContactAuraController.createTodoQueueable(new List<Object>{objMap}); 
+        Test.stopTest();
+     }
+    static testmethod void run8(){
+        Account a = [SELECT id FROM Account limit 1];
+        Campaign c = [SELECT Id FROM Campaign limit 1];
+        Contact con = [SELECT id,SupportersID__c from Contact LIMIT 1];
         Map<object,object> objMap = new Map<object,object>{
             'cta' => '5e3d5f7d77095300043c928c',
-            'SupportersID__c' => '5e3d5f7d77095300043c928c',    
-            'Id' => con.Id
+                'SupportersID__c' => '5e3d5f7d77095300043c928c',    
+                'Id' => con.Id,
+                'givemagic__SupportersID__c' => con.givemagic__SupportersID__c
         };
         StaticResourceCalloutMock mock = new StaticResourceCalloutMock();
         Test.setMock(HttpCalloutMock.class, new MockHttpResponseGenerator());
+          System.assert(objMap != null , 'ObjMap Coming Null for createTodo');
+        
         Test.startTest();
         ContactAuraController.createTodo(new List<Object>{objMap}); 
         Test.stopTest();
- 
     }
+    
+    
 
 
 }

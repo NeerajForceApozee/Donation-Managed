@@ -36,9 +36,8 @@
     doInit : function(component, event, helper) {
         var next = false;
         var prev = false;
-        
 
-        helper.getAccountListWithPaging(component,next,prev);
+       // helper.getAccountListWithPaging(component,next,prev);
         helper.getconfiguration(component, event, helper);
 	},
  
@@ -56,9 +55,9 @@
         helper.getAccountListWithPaging(component,next,prev,offset);
     },
     inputclick : function(component,event,helper){
-     	 console.log('#### username',component.find("inpfield1").get("v.value"));  
-     	console.log('#### password',component.find("inpfield2").get("v.value"));  
-     	console.log('#### workspace',component.find("inpfield3").get("v.value"));  
+     	 //console.log('#### username',component.find("inpfield1").get("v.value"));  
+     	//console.log('#### password',component.find("inpfield2").get("v.value"));  
+     	//console.log('#### workspace',component.find("inpfield3").get("v.value"));  
         var ip1 = component.find("inpfield1").get("v.value");
         var ip2 = component.find("inpfield2").get("v.value");
         var ip3 = component.find("inpfield3").get("v.value");
@@ -69,18 +68,6 @@
         }
             
     },
-   /* handleCTA:function(cmp,event,helper){
-        helper.handleCTA(cmp,event,helper)
-    },
-    handleSupporter:function(cmp,event,helper){
-        helper.handleSupporter(cmp,event,helper)
-    },
-    handlePayments:function(cmp,event,helper){
-        helper.handlePayments(cmp,event,helper)
-    },
-    handleVideo:function(cmp,event,helper){
-        helper.handleVideo(cmp,event,helper)
-    },*/
     
     showSpinner:function(component,event,helper){
 		helper.showSpinner(component,event,helper);  		
@@ -89,7 +76,6 @@
 	 hideSpinner:function(component,event,helper){
 		helper.hideSpinner(component,event,helper);
  		 cmp.set("v.IsSpinner",false);
-
 	},   
     /*handleClick1: function (cmp, event) {
         cmp.set('v.loaded', !cmp.get('v.loaded'));

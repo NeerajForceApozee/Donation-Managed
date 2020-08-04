@@ -1,11 +1,9 @@
 @isTest
 public class Q_AdminQueueable_Test{
     static testmethod void run(){
-         Configuration__c config = new Configuration__c(Name='GiveMagic Set Up Assistant',Workspace__c='Easyclick',Username__c='easyclick05@gmail.com',Password__c='122222');   
-        insert config;
-        StaticResourceCalloutMock mock = new StaticResourceCalloutMock();
-        Test.setMock(HttpCalloutMock.class, new MockHttpResponseGenerator());
-        System.enqueueJob(new Q_Admin_Queueable(1,1,False));   
+          
+        System.enqueueJob(new Q_Admin_Queueable(1,1,False)); 
+        //Q_Admin_Queueable.callQueueable(5,100,true);
     }
     
     

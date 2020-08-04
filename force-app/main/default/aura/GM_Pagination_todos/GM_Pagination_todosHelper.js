@@ -7,10 +7,10 @@
         let self = this;
         action.setCallback(this, function(result){
             var state = result.getState();
-             console.log("###",result);
+             //console.log("###",result);
             if (component.isValid() && state === "SUCCESS"){
                 var res = result.getReturnValue();
-                console.log('#### response from server ', res);
+                //console.log('#### response from server ', res);
                         
 
                 for(var i = 0 ; i < res.length ; i++){
@@ -29,7 +29,7 @@
             action.setCallback(this, function(result){
                 var state = result.getState();
                 if (component.isValid() && state === "SUCCESS"){
-                    console.log('ctas>',result.getReturnValue());
+                    //console.log('ctas>',result.getReturnValue());
                  	component.set("v.ctas",result.getReturnValue());
                     component.set("v.selectedcta", result.getReturnValue()[0].givemagic__Id__c);
                     component.set("v.selectedid", result.getReturnValue()[0].Id);
@@ -47,7 +47,7 @@
             action.setCallback(this, function(result){
                 var state = result.getState();
                 if (component.isValid() && state === "SUCCESS"){
-                    console.log('admins>',result.getReturnValue());
+                    //console.log('admins>',result.getReturnValue());
                  	component.set("v.admins",result.getReturnValue());
                      self.ctahelper(component,event,helper);
                 }
@@ -71,14 +71,14 @@
     callTodo: function(component,event,helper){
         //For loop contactlist, in another array copy all contacts where isSelected=true
         var itemsToPass = component.get("v.contactList");
-         console.log('itemsToPass -> ' , JSON.stringify(itemsToPass), itemsToPass.length);
+         //console.log('itemsToPass -> ' , JSON.stringify(itemsToPass), itemsToPass.length);
          var contacts = [];
          for(var i = 0 ; i < itemsToPass.length ; i++){
             if(itemsToPass[i].isSelected){
                  contacts.push(itemsToPass[i]);               
             }                   
         }
-        console.log('cons -> ' , contacts );
+        //console.log('cons -> ' , contacts );
        var action= component.get("c.createTodo");
         action.setParams({
            'objects' : contacts
@@ -86,10 +86,10 @@
         var self = this;
         action.setCallback(this, function(result){
             var state = result.getState();
-             console.log("###",state);
+             //console.log("###",state);
             if (state === "SUCCESS"){
                 let res = result.getReturnValue();
-                console.log('#### response from server ', res);
+                //console.log('#### response from server ', res);
                  this.showToast("Todo Sent , Task Created", "Success", null);
                // component.set("v.contactList",res);   
             }
@@ -113,8 +113,8 @@
              }
             
          }
-         console.log('## selected  cta',selectedcta);
-         console.log('## changed Id',selectedId);
+        // console.log('## selected  cta',selectedcta);
+       //  console.log('## changed Id',selectedId);
          component.set("v.contactList",contacts); 
          component.set("v.selectedid",selectedId); 
         

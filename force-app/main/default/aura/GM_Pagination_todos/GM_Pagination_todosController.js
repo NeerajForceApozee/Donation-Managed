@@ -8,7 +8,7 @@
     //Select all contacts
     handleSelectAllContact: function(component, event, helper) {
         var contacts = component.get("v.contactList");
-        console.log('#### select all',component.find("selectAll").get("v.value") );
+        //console.log('#### select all',component.find("selectAll").get("v.value") );
         for(var i = 0 ; i < contacts.length ; i++){
         	contacts[i].isSelected = component.find("selectAll").get("v.value") ;
                     
@@ -16,7 +16,7 @@
         component.set("v.contactList",contacts); 
         var isEnabled = false ;
         for(var i = 0 ; i < contacts.length ; i++){
-            console.log('### checkbox value',contacts[i].isSelected);
+            //console.log('### checkbox value',contacts[i].isSelected);
             if(contacts[i].isSelected){
              	isEnabled = true;
                 break;
@@ -31,7 +31,7 @@
     handleSelectedcontact: function(component, event, helper){
     	 var contacts = component.get("v.contactList");
          var isEnabled = false ;
-        console.log('#####',isEnabled);
+        //console.log('#####',isEnabled);
          for(var i = 0 ; i < contacts.length ; i++){
             if(contacts[i].isSelected){
              	isEnabled = true;
@@ -64,7 +64,7 @@
     
 	searchKeyChange: function(component, event) {
 		var searchKey =  component.find("input1".get("v.value")	)	;
-		console.log(searchKey);
+		//console.log(searchKey);
 		var action = component.get("v.getByName") ;
 		var keysize = component.get("v.totalSize");
 

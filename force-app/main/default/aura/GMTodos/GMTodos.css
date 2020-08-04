@@ -1,24 +1,61 @@
 .THIS {
-    font-family: Arial, sans-serif;
+    font-family: 'Salesforce Sans', Arial, sans-serif !important;
 }
 
 wrapper.THIS{
     text-align: center;
+    font-family: 'Salesforce Sans', Arial, sans-serif !important;
 }
 .THIS .inputchg{
-    width : 50% !important ;    
+    width : 50px !important ;   
+    text-align:left;
 }
+
 .THIS .callToAction{
-    width : 180px !important;
+    width : 220px !important;
 }
 
 .THIS .gmUser{
-    width : 180px !important;
+    width : 220px !important;
 }
 .THIS .table{
     width : 120% !important; 
 }
+.THIS .td{
+    width:20px !important;
+}
 
 .THIS.btn{
     border-radius: 25px !important ; 
+}
+.THIS .TodoBtn{
+    font-wight:bold;
+}
+
+@media only screen 
+and (min-device-width : 768px) 
+and (max-device-width : 1024px)  { 
+    .THIS .callToAction{
+        width : 120px !important;
+    }
+    .THIS .gmUser{
+        width : 120px !important;
+    }
+    .THIS .slds-col{
+        font-size : 12px;
+    }
+    .THIS .slds-form-element__static {
+        font-size: 12px;
+        width :50%;
+    }
+    .THIS .Description {
+        Width: 300px !important;;
+    }
+     .THIS .description {
+        Width: 300px !important;
+    }
+    .THIS p {
+        width : 300px;
+    }
+    
 }

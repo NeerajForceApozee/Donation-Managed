@@ -1,38 +1,31 @@
 global with sharing class GiveMagicIntegrator {   
 
 @AuraEnabled
-    public  static String login(String username,String password,String workspace){
-        String endpoint = 'https://givemagic-test.herokuapp.com/admin/login';       
-           Map<String,Object> jsonMap = new Map<String,Object>{
-           'email' => username,
-           'password' =>password,
-           'workspace_name' => workspace
-           };
-           
+    public  static Map<String,Object> login(String clientId,String clientSecret,String integrationId){
+        	//harcode for testing plz remove when creating a package
+        //integrationId='00D2v000000Nokq';
+        system.debug('integration id     '+integrationId);
+        String endpoint = 'https://api.givemagicapp.com/auth/clientAccess?clientId='+clientId+'&clientSecret='+clientSecret+'&integrationId='+integrationId;       
+          //system.debug('EndPoint'+endpoint);
+       
  // initialize the api client for the desired environment
         Http h = new Http();
         HttpRequest request = new HttpRequest();
         HttpResponse httpRes = new HttpResponse();
         request.setEndpoint(endpoint);
-        request.setMethod('POST');
-        request.setHeader('Content-type', 'application/json');   
-        system.debug('## POST body'+ jsonMap);
-        request.setBody(JSON.serialize(jsonMap));
+        request.setMethod('GET');
         httpRes=h.send(request);
         system.debug('###Login  response '+ httpRes.getStatusCode());
+        system.debug('###response= '+httpRes.getBody());
+         Map<String,Object> objMap = new Map<String,Object>();
+         Map<String,Object> mappedResponse = (Map<String,Object>)JSON.deserializeUntyped(httpRes.getBody());
+             objMap.put('access token',mappedResponse.get('accessToken')) ;
+             objMap.put('identity token',mappedResponse.get('identityToken')) ;
+             //system.debug('Object map ==> '+objMap.get('access token'));
+             //system.debug('Object map ==> '+objMap.get('identity token'));
         
-        JSONParser parser = JSON.createParser(httpRes.getBody());
-        String accestoken='';    
-        while (parser.nextToken() != null) {
-            if ((parser.getCurrentToken() == JSONToken.FIELD_NAME) && 
-                (parser.getText() == 'token')) { 
-                 parser.nextToken(); 
-                accestoken=parser.getText();               
-                 system.debug('==1=='+ parser.getText());
-            }
-        }
         
-        return accestoken;
+        return objMap;
      }
  
 }
